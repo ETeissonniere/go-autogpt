@@ -8,6 +8,6 @@ import (
 
 func TestShutdownCommand(t *testing.T) {
 	ret, err := (&ShutdownCommand{}).Execute(nil)
-	assert.Nil(t, err)
+	assert.Equal(t, ErrShutdown, err)
 	assert.Equal(t, "", ret)
 }
