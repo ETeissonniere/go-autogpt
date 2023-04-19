@@ -20,13 +20,14 @@ func (c *testCommand) Usage() string {
 	return c.usage
 }
 
-func (c *testCommand) Execute(args []string) error {
-	return nil
+func (c *testCommand) Execute(args []string) (string, error) {
+	return "", nil
 }
 
-func TestNew(t *testing.T) {
+func TestString_generatePrompt(t *testing.T) {
 	commands := []commands.Command{
-		&testCommand{name: "test", usage: "test usage"},
+		&testCommand{name: "test1", usage: "test usage"},
+		&testCommand{name: "test2", usage: "test usage"},
 	}
 
 	prompt := New("test", "test task", commands)
@@ -36,12 +37,21 @@ You should accomplish your task autonomously. The user is not allowed
 to and cannot interfere with your actions.
 
 You can use the following commands:
-test: test usage
+test1: test usage
+test2: test usage
 
 When replying, you can include any context, description or thoughts in
 your answer. However, you must ensure that the last line of your
-answer is the command you want to execute along with its arguments.
-`
+answer is the command you want to execute along with its arguments.`
 
-	assert.Equal(t, expected, prompt)
+	assert.Equal(t, expected, prompt.String())
+}
+
+func TestCommands_sharesInitialCommands(t *testing.T) {
+	commands := []commands.Command{
+		&testCommand{name: "test", usage: "test usage"},
+	}
+
+	prompt := New("test", "test task", commands)
+	assert.Equal(t, commands, prompt.Commands())
 }
