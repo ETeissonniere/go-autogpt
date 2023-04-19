@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/avantgardists/hercules/llms"
-	"github.com/avantgardists/hercules/prompt"
-	"github.com/avantgardists/hercules/prompt/commands"
+	"github.com/eteissonniere/hercules/llms"
+	"github.com/eteissonniere/hercules/prompt"
+	"github.com/eteissonniere/hercules/prompt/commands"
 )
 
 type Agent struct {

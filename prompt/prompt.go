@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"text/template"
 
-	"github.com/avantgardists/hercules/prompt/commands"
+	"github.com/eteissonniere/hercules/prompt/commands"
 )
 
 const PromptTemplate = `You are {{.Name}}. Your task is to {{.Task}}.

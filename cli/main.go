@@ -5,11 +5,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/avantgardists/hercules/agent"
-	"github.com/avantgardists/hercules/llms"
-	"github.com/avantgardists/hercules/misc/logging"
-	"github.com/avantgardists/hercules/prompt"
-	"github.com/avantgardists/hercules/prompt/commands"
+	"github.com/eteissonniere/hercules/agent"
+	"github.com/eteissonniere/hercules/llms"
+	"github.com/eteissonniere/hercules/misc/logging"
+	"github.com/eteissonniere/hercules/prompt"
+	"github.com/eteissonniere/hercules/prompt/commands"
+
 	"github.com/rs/zerolog/log"
 )
 

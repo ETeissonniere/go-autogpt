@@ -1,4 +1,4 @@
-module github.com/avantgardists/hercules
+module github.com/eteissonniere/hercules
 
 go 1.20
 

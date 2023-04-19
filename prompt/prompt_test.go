@@ -3,7 +3,8 @@ package prompt
 import (
 	"testing"
 
-	"github.com/avantgardists/hercules/prompt/commands"
+	"github.com/eteissonniere/hercules/prompt/commands"
+
 	"github.com/stretchr/testify/assert"
 )
 

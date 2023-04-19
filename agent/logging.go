@@ -1,7 +1,8 @@
 package agent
 
 import (
-	"github.com/avantgardists/hercules/llms"
+	"github.com/eteissonniere/hercules/llms"
+
 	"github.com/rs/zerolog/log"
 )
 
