@@ -42,7 +42,9 @@ test2: test usage
 
 When replying, you can include any context, description or thoughts in
 your answer. However, you must ensure that the last line of your
-answer is the command you want to execute along with its arguments.`
+answer is the command you want to execute along with its arguments.
+
+You are allowed only one command per reply.`
 
 	assert.Equal(t, expected, prompt.String())
 }
