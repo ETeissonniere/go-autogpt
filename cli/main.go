@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bufio"
-	"fmt"
-	"os"
+	"flag"
 
 	"github.com/eteissonniere/hercules/agent"
 	"github.com/eteissonniere/hercules/llms"
@@ -14,31 +12,25 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func askUserInput(prompt string) string {
-	fmt.Print(prompt)
-
-	reader := bufio.NewReader(os.Stdin)
-	text, _ := reader.ReadString('\n')
-
-	text = text[:len(text)-1]
-	return text
-}
-
 func main() {
-	logging.Init(true)
-
 	// TODO: select model interface and model of agent
 	// TODO: memory store
 	// TODO: should be multi agent
 
-	apiKey := askUserInput("OpenAI API Key: ")
-	name := askUserInput("Name: ")
-	task := askUserInput("Task: ")
+	logging.Init(true)
 
-	fmt.Println(task)
+	apiKey := flag.String("apiKey", "", "OpenAI API Key")
+	name := flag.String("name", "", "Name of the agent")
+	task := flag.String("task", "", "Task of the agent")
 
-	llm := llms.NewOpenAI(apiKey, "gpt-3.5-turbo")
-	agentPrompt := prompt.New(name, task, commands.DefaultCommands)
+	flag.Parse()
+
+	if *apiKey == "" || *name == "" || *task == "" {
+		log.Fatal().Msg("missing required flag")
+	}
+
+	llm := llms.NewOpenAI(*apiKey, "gpt-3.5-turbo")
+	agentPrompt := prompt.New(*name, *task, commands.DefaultCommands)
 	agent := agent.New(agentPrompt, llm)
 
 	if err := agent.Run(); err != nil {

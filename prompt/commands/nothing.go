@@ -11,7 +11,7 @@ func (c *DoNothingCommand) Usage() string {
 }
 
 func (c *DoNothingCommand) Execute(args []string) (string, error) {
-	return "", nil
+	return "nothing done", nil
 }
 
 func init() {

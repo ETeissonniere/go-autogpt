@@ -5,8 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/rs/zerolog/log"
 )
 
 const openAiUrl = "https://api.openai.com/v1/chat/completions"
@@ -42,8 +40,6 @@ func (o *OpenAI) Complete(conversation ChatConversation) (ChatMessage, error) {
 		return ChatMessage{}, fmt.Errorf("failed to send HTTP request: %w", err)
 	}
 	defer resp.Body.Close()
-
-	log.Debug().Msgf("OpenAI response: %s", resp.Status)
 
 	if resp.StatusCode != http.StatusOK {
 		return ChatMessage{}, fmt.Errorf("OpenAI returned status code %d", resp.StatusCode)

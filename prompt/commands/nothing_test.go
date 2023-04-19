@@ -9,5 +9,5 @@ import (
 func TestDoNothingCommand(t *testing.T) {
 	ret, err := (&DoNothingCommand{}).Execute(nil)
 	assert.Nil(t, err)
-	assert.Equal(t, "", ret)
+	assert.Equal(t, "nothing done", ret)
 }

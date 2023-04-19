@@ -27,7 +27,6 @@ func (a *Agent) Run() error {
 	conversation := llms.ChatConversation{
 		{Role: llms.ChatRoleSystem, Content: a.prompt.String()},
 	}
-	logMessage(conversation[0])
 
 	for {
 		resp, err := a.llm.Complete(conversation)

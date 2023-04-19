@@ -5,6 +5,7 @@ import (
 	"text/template"
 
 	"github.com/eteissonniere/hercules/prompt/commands"
+	"github.com/rs/zerolog/log"
 )
 
 const PromptTemplate = `You are {{.Name}}. Your task is to {{.Task}}.
@@ -19,7 +20,8 @@ When replying, you can include any context, description or thoughts in
 your answer. However, you must ensure that the last line of your
 answer is the command you want to execute along with its arguments.
 
-You are allowed only one command per reply.`
+You are allowed only one command per reply. Your reply should always
+finish with a command.`
 
 type Prompt struct {
 	Name string
@@ -51,6 +53,13 @@ func New(name string, task string, commands []commands.Command) Prompt {
 			Usage: command.Usage(),
 		})
 	}
+
+	log.Debug().
+		Str("name", name).
+		Str("task", task).
+		Interface("commands", vars.Cmds).
+		Msg("new prompt created")
+
 	return vars
 }
 
