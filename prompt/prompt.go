@@ -8,20 +8,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const PromptTemplate = `You are {{.Name}}. Your task is to {{.Task}}.
+const PromptTemplate = `You are {{.Name}}. Your task follows:
+{{.Task}}
 
-You should accomplish your task autonomously. The user is not allowed
-to and cannot interfere with your actions.
-
-You can use the following commands:
+You should accomplish your task autonomously. The user is not allowed to and cannot interfere with your actions. To do so, you can use the following commands:
 {{range .Cmds}}{{.Name}}: {{.Usage}}
 {{end}}
-When replying, you can include any context, description or thoughts in
-your answer. However, you must ensure that the last line of your
-answer is the command you want to execute along with its arguments.
+When replying, you can include any context, description or thoughts in your answer. However, you must ensure that the last line of your answer is the command you want to execute along with its arguments.
 
-You are allowed only one command per reply. Your reply should always
-finish with a command.`
+You are allowed only one command per reply. Your reply should always finish with a command.`
 
 type Prompt struct {
 	Name string
