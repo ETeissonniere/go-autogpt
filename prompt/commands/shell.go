@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"fmt"
 	"os/exec"
 	"strings"
 
@@ -24,7 +25,12 @@ func (c *ExecuteShellCommand) Usage() string {
 }
 
 func (c *ExecuteShellCommand) Execute(args []string) (string, error) {
-	return c.Executor.Execute(strings.Join(args, " "))
+	output, err := c.Executor.Execute(strings.Join(args, " "))
+	if err != nil {
+		return fmt.Sprintf("an error happened: %v", err), nil
+	}
+
+	return fmt.Sprintf("output: %s", output), nil
 }
 
 type ShellCommandExecutorWithNoGatekeeping struct{}
