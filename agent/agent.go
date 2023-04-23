@@ -51,10 +51,13 @@ func (a *Agent) Run() error {
 			ret, err := cmd.Execute(args)
 			if err == commands.ErrShutdown {
 				return nil
+			} else if aerr, ok := err.(*commands.AgentError); ok {
+				reply.Content = aerr.AgentExplainer()
 			} else if err != nil {
 				return fmt.Errorf("failed to execute command: %w", err)
+			} else {
+				reply.Content = ret
 			}
-			reply.Content = ret
 		}
 		logMessage(reply)
 

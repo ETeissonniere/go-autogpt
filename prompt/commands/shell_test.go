@@ -32,7 +32,7 @@ func TestExecuteShellCommand_forwardError(t *testing.T) {
 
 	command := &ExecuteShellCommand{Executor: mock}
 	_, err := command.Execute([]string{"ls", "-la"})
-	assert.Equal(t, assert.AnError, err)
+	assert.Equal(t, NewAgentError(assert.AnError), err)
 }
 
 func TestExecuteShellCommand_forwardOutput(t *testing.T) {
@@ -41,5 +41,5 @@ func TestExecuteShellCommand_forwardOutput(t *testing.T) {
 	command := &ExecuteShellCommand{Executor: mock}
 	out, err := command.Execute([]string{"ls", "-la"})
 	assert.Nil(t, err)
-	assert.Equal(t, "output", out)
+	assert.Equal(t, "output: output", out)
 }

@@ -27,6 +27,20 @@ func (c *mockErrorCommand) Execute(args []string) (string, error) {
 	return "", errMockCommand
 }
 
+type mockAgentErrorCommand struct{}
+
+func (c *mockAgentErrorCommand) Name() string {
+	return "agenterror"
+}
+
+func (c *mockAgentErrorCommand) Usage() string {
+	return "agenterror"
+}
+
+func (c *mockAgentErrorCommand) Execute(args []string) (string, error) {
+	return "", commands.NewAgentError(errMockCommand)
+}
+
 type mockChatModel string
 
 func (m mockChatModel) Complete(conversation llms.ChatConversation) (llms.ChatMessage, error) {
@@ -41,6 +55,7 @@ func testPrompt() prompt.Prompt {
 		&commands.DoNothingCommand{},
 		&commands.ShutdownCommand{},
 		&mockErrorCommand{},
+		&mockAgentErrorCommand{},
 	})
 }
 
@@ -78,6 +93,24 @@ func TestRun_handleCommandNotFound(t *testing.T) {
 			}, nil
 		} else {
 			assert.Equal(t, "command not found", conversation[len(conversation)-1].Content)
+			return llms.ChatMessage{}, fmt.Errorf("done")
+		}
+	}))
+	assert.Error(t, a.Run())
+}
+
+func TestRun_forwardAgentErrorToAgent(t *testing.T) {
+	called := false
+	a := New(testPrompt(), mockChatModelWithTest(func(conversation llms.ChatConversation) (llms.ChatMessage, error) {
+		if !called {
+			called = true
+			return llms.ChatMessage{
+				Role:    llms.ChatRoleAssistant,
+				Content: (&mockAgentErrorCommand{}).Name(),
+			}, nil
+		} else {
+			aerr := commands.NewAgentError(errMockCommand)
+			assert.Equal(t, aerr.AgentExplainer(), conversation[len(conversation)-1].Content)
 			return llms.ChatMessage{}, fmt.Errorf("done")
 		}
 	}))

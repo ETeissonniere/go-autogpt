@@ -27,7 +27,7 @@ func (c *ExecuteShellCommand) Usage() string {
 func (c *ExecuteShellCommand) Execute(args []string) (string, error) {
 	output, err := c.Executor.Execute(strings.Join(args, " "))
 	if err != nil {
-		return fmt.Sprintf("an error happened: %v", err), nil
+		return "", NewAgentError(err)
 	}
 
 	return fmt.Sprintf("output: %s", output), nil
