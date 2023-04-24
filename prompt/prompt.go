@@ -3,18 +3,19 @@ package prompt
 import (
 	"bytes"
 	"text/template"
+	"time"
 
 	"github.com/eteissonniere/hercules/prompt/commands"
 	"github.com/rs/zerolog/log"
 )
 
-const PromptTemplate = `You are {{.Name}}. Your task follows:
+const PromptTemplate = `Today is {{.Today.Format "Jan 02, 2006 15:04:05 UTC"}}. You are {{.Name}}. Your task follows:
 {{.Task}}
 
 You should accomplish your task autonomously. The user is not allowed to and cannot interfere with your actions. To do so, you can use the following commands:
 {{range .Cmds}}{{.Name}}: {{.Usage}}
 {{end}}
-When replying, you can include any context, description or thoughts in your answer. However, you must ensure that the last line of your answer is the command you want to execute along with its arguments.
+When replying, you can include any context, description or thoughts in your answer. However, you must ensure that the last line of your answer is the command you want to execute along with its arguments. A command should fit on exactly one line, if necessary, try to use escape characters or combine commands in multiple replies. You cannot combine multiple commands in one message.
 
 You are allowed only one command per reply. Your reply should always finish with a command.`
 
@@ -25,6 +26,7 @@ type Prompt struct {
 		Name  string
 		Usage string
 	}
+	Today time.Time
 
 	commands []commands.Command
 }
@@ -37,6 +39,7 @@ func New(name string, task string, commands []commands.Command) Prompt {
 			Name  string
 			Usage string
 		}{},
+		Today:    time.Now(),
 		commands: commands,
 	}
 	for _, command := range commands {
