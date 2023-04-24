@@ -7,15 +7,17 @@ import (
 	"github.com/eteissonniere/hercules/llms"
 	"github.com/eteissonniere/hercules/prompt"
 	"github.com/eteissonniere/hercules/prompt/commands"
+	"github.com/rs/zerolog/log"
 )
 
 type Agent struct {
-	prompt prompt.Prompt
-	llm    llms.LLMChatModel
+	prompt   prompt.Prompt
+	llm      llms.LLMChatModel
+	exporter Exporter
 }
 
-func New(prompt prompt.Prompt, llm llms.LLMChatModel) *Agent {
-	return &Agent{prompt, llm}
+func New(prompt prompt.Prompt, llm llms.LLMChatModel, exporter Exporter) *Agent {
+	return &Agent{prompt, llm, exporter}
 }
 
 func (a *Agent) Run() error {
@@ -27,14 +29,14 @@ func (a *Agent) Run() error {
 	conversation := llms.ChatConversation{
 		{Role: llms.ChatRoleSystem, Content: a.prompt.String()},
 	}
-	logMessage(conversation[0])
+	a.onMessage(conversation[0])
 
 	for {
 		resp, err := a.llm.Complete(conversation)
 		if err != nil {
 			return fmt.Errorf("failed to get next message in conversation: %w", err)
 		}
-		logMessage(resp)
+		a.onMessage(resp)
 
 		lines := strings.Split(resp.Content, "\n")
 		lastLine := lines[len(lines)-1]
@@ -59,9 +61,16 @@ func (a *Agent) Run() error {
 				reply.Content = ret
 			}
 		}
-		logMessage(reply)
+		a.onMessage(reply)
 
 		conversation = append(conversation, resp)
 		conversation = append(conversation, reply)
 	}
+}
+
+func (a *Agent) onMessage(msg llms.ChatMessage) error {
+	log.Info().
+		Str("role", string(msg.Role)).
+		Msg(msg.Content)
+	return a.exporter.Export(msg)
 }

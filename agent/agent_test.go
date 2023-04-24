@@ -68,17 +68,17 @@ func (m mockChatModelWithTest) Complete(conversation llms.ChatConversation) (llm
 func TestRun_llmError(t *testing.T) {
 	a := New(testPrompt(), mockChatModelWithTest(func(conversation llms.ChatConversation) (llms.ChatMessage, error) {
 		return llms.ChatMessage{}, fmt.Errorf("mock error")
-	}))
+	}), DoNotExport())
 	assert.Equal(t, fmt.Errorf("failed to get next message in conversation: %w", fmt.Errorf("mock error")), a.Run())
 }
 
 func TestRun_exitOnShutdown(t *testing.T) {
-	a := New(testPrompt(), mockChatModel((&commands.ShutdownCommand{}).Name()))
+	a := New(testPrompt(), mockChatModel((&commands.ShutdownCommand{}).Name()), DoNotExport())
 	assert.Nil(t, a.Run())
 }
 
 func TestRun_forwardError(t *testing.T) {
-	a := New(testPrompt(), mockChatModel((&mockErrorCommand{}).Name()))
+	a := New(testPrompt(), mockChatModel((&mockErrorCommand{}).Name()), DoNotExport())
 	assert.Equal(t, fmt.Errorf("failed to execute command: %w", errMockCommand), a.Run())
 }
 
@@ -95,7 +95,7 @@ func TestRun_handleCommandNotFound(t *testing.T) {
 			assert.Equal(t, "command not found", conversation[len(conversation)-1].Content)
 			return llms.ChatMessage{}, fmt.Errorf("done")
 		}
-	}))
+	}), DoNotExport())
 	assert.Error(t, a.Run())
 }
 
@@ -113,6 +113,6 @@ func TestRun_forwardAgentErrorToAgent(t *testing.T) {
 			assert.Equal(t, aerr.AgentExplainer(), conversation[len(conversation)-1].Content)
 			return llms.ChatMessage{}, fmt.Errorf("done")
 		}
-	}))
+	}), DoNotExport())
 	assert.Error(t, a.Run())
 }
