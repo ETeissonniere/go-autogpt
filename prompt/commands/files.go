@@ -22,7 +22,7 @@ func (c *LsFilesCommand) Usage() string {
 
 func (c *LsFilesCommand) Execute(args []string) (string, error) {
 	if len(args) == 0 {
-		return "", NewAgentError(ErrNoFileOrDirectory)
+		args = []string{"."}
 	}
 
 	dir := args[0]
@@ -32,8 +32,12 @@ func (c *LsFilesCommand) Execute(args []string) (string, error) {
 	}
 
 	output := ""
-	for _, entry := range entries {
-		output += entry.Name() + ","
+	for i, entry := range entries {
+		if i < len(entries)-2 {
+			output += entry.Name() + ","
+		} else {
+			output += entry.Name()
+		}
 	}
 
 	return output, nil
