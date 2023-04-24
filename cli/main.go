@@ -1,7 +1,7 @@
 package main
 
 import (
-	"flag"
+	"os"
 
 	"github.com/eteissonniere/hercules/agent"
 	"github.com/eteissonniere/hercules/llms"
@@ -10,6 +10,7 @@ import (
 	"github.com/eteissonniere/hercules/prompt/commands"
 
 	"github.com/rs/zerolog/log"
+	"github.com/urfave/cli/v2"
 )
 
 func main() {
@@ -19,30 +20,53 @@ func main() {
 
 	logging.Init(true)
 
-	apiKey := flag.String("apiKey", "", "OpenAI API Key")
-	name := flag.String("name", "", "Name of the agent")
-	task := flag.String("task", "", "Task of the agent")
-	exportPath := flag.String("export", "", "Path to export the agent logs to - ignored if not specified")
+	app := &cli.App{
+		Name: os.Args[0],
+		Commands: []*cli.Command{
+			{
+				Name:  "run",
+				Usage: "Run the agent",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "apiKey",
+						Usage:    "OpenAI API Key",
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "name",
+						Usage:    "Name of the agent",
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:     "task",
+						Usage:    "Task of the agent",
+						Required: true,
+					},
+					&cli.StringFlag{
+						Name:  "export",
+						Usage: "Path to export the agent logs to - ignored if not specified",
+					},
+				},
+				Action: func(c *cli.Context) error {
+					llm := llms.NewOpenAI(c.String("apiKey"), "gpt-3.5-turbo")
+					exporter := agent.DoNotExport()
+					if c.String("export") != "" {
+						var err error
+						exporter, err = agent.ExportToFile(c.String("export"))
+						if err != nil {
+							return err
+						}
+					}
+					agentPrompt := prompt.New(c.String("name"), c.String("task"), commands.DefaultCommands)
+					agent := agent.New(agentPrompt, llm, exporter)
 
-	flag.Parse()
-
-	if *apiKey == "" || *name == "" || *task == "" {
-		log.Fatal().Msg("missing required flag")
+					return agent.Run()
+				},
+			},
+		},
 	}
 
-	llm := llms.NewOpenAI(*apiKey, "gpt-3.5-turbo")
-	exporter := agent.DoNotExport()
-	if *exportPath != "" {
-		var err error
-		exporter, err = agent.ExportToFile(*exportPath)
-		if err != nil {
-			log.Fatal().Err(err).Msg("failed to create exporter")
-		}
-	}
-	agentPrompt := prompt.New(*name, *task, commands.DefaultCommands)
-	agent := agent.New(agentPrompt, llm, exporter)
-
-	if err := agent.Run(); err != nil {
-		log.Error().Err(err).Msg("agent errored")
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal().Err(err).Msg("failed to run app")
 	}
 }
