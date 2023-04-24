@@ -1,9 +1,11 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os/exec"
 	"strings"
+	"time"
 
 	"github.com/rs/zerolog/log"
 )
@@ -21,7 +23,7 @@ func (c *ExecuteShellCommand) Name() string {
 }
 
 func (c *ExecuteShellCommand) Usage() string {
-	return "execute shell command with the provided arguments. Example: shell ls -la"
+	return "execute shell command with the provided arguments with a timeout of at most 1 second. Example: shell ls -la"
 }
 
 func (c *ExecuteShellCommand) Execute(args []string) (string, error) {
@@ -38,7 +40,10 @@ type ShellCommandExecutorWithNoGatekeeping struct{}
 func (e *ShellCommandExecutorWithNoGatekeeping) Execute(command string) (string, error) {
 	log.Debug().Str("command", command).Msg("executing shell command")
 
-	cmd := exec.Command("sh", "-c", command)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, "sh", "-c", command)
 	output, err := cmd.Output()
 	if err != nil {
 		return "", err
