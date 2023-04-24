@@ -40,8 +40,7 @@ func (a *Agent) Run() error {
 
 		lines := strings.Split(resp.Content, "\n")
 		lastLine := lines[len(lines)-1]
-
-		words := strings.Split(lastLine, " ")
+		words := splitCommand(withEscapeCharacters(lastLine))
 		command := words[0]
 		args := words[1:]
 

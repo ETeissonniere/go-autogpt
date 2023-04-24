@@ -70,7 +70,7 @@ func (c *WriteFileCommand) Name() string {
 }
 
 func (c *WriteFileCommand) Usage() string {
-	return "write the provided content to a file. Example: fs-write /tmp/file.txt 'hello world'"
+	return "write the provided content to a file, may overwrite if the file already exists. Example: fs-write /tmp/file.txt 'hello world'"
 }
 
 func (c *WriteFileCommand) Execute(args []string) (string, error) {
