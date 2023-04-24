@@ -15,7 +15,8 @@ const PromptTemplate = `Today is {{.Today.Format "Jan 02, 2006 15:04:05 UTC"}}. 
 You should accomplish your task autonomously. The user is not allowed to and cannot interfere with your actions. To do so, you can use the following commands:
 {{range .Cmds}}{{.Name}}: {{.Usage}}
 {{end}}
-When replying, you can include any context, description or thoughts in your answer. However, you must ensure that the last line of your answer is the command you want to execute along with its arguments. A command should fit on exactly one line, if necessary, try to use escape characters or combine commands in multiple replies. You cannot combine multiple commands in one message.
+When replying, you can include any context, description or thoughts in your answer. However, you must ensure that the last line of your answer is the command you want to execute along with its arguments. A command should fit on exactly one line, if necessary, try to use escape characters if necessary. You cannot combine multiple commands in one message. Your command should start with the command name followed by its arguments:
+command arg1 arg2 arg3
 
 You are allowed only one command per reply. Your reply should always finish with a command.`
 
