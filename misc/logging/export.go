@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/eteissonniere/hercules/llms"
+	"github.com/eteissonniere/go-autogpt/llms"
 
 	"github.com/rs/zerolog/log"
 )

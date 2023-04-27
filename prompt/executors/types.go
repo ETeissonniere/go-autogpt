@@ -1,8 +1,8 @@
 package executors
 
 import (
-	"github.com/eteissonniere/hercules/prompt"
-	"github.com/eteissonniere/hercules/prompt/commands"
+	"github.com/eteissonniere/go-autogpt/prompt"
+	"github.com/eteissonniere/go-autogpt/prompt/commands"
 )
 
 // A list of natural languages steps which describe a plan.

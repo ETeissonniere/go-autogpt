@@ -5,7 +5,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/eteissonniere/hercules/prompt/commands"
+	"github.com/eteissonniere/go-autogpt/prompt/commands"
 )
 
 const BasePromptTemplate = `Today is {{.Today.Format "Jan 02, 2006 15:04:05 UTC"}}. You are an autonomous agent which is in charge of planning and later executing the provided tasks. To do so, you have been provided with a set of tools and commands for you to use:

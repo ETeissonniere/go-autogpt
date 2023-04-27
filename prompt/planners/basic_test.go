@@ -3,8 +3,8 @@ package planners
 import (
 	"testing"
 
-	"github.com/eteissonniere/hercules/llms"
-	"github.com/eteissonniere/hercules/prompt/executors"
+	"github.com/eteissonniere/go-autogpt/llms"
+	"github.com/eteissonniere/go-autogpt/prompt/executors"
 	"github.com/stretchr/testify/assert"
 )
 

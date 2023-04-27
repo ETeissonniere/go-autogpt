@@ -5,10 +5,10 @@ package mastermind
 import (
 	"fmt"
 
-	"github.com/eteissonniere/hercules/misc/logging"
-	"github.com/eteissonniere/hercules/prompt"
-	"github.com/eteissonniere/hercules/prompt/commands"
-	"github.com/eteissonniere/hercules/prompt/executors"
+	"github.com/eteissonniere/go-autogpt/misc/logging"
+	"github.com/eteissonniere/go-autogpt/prompt"
+	"github.com/eteissonniere/go-autogpt/prompt/commands"
+	"github.com/eteissonniere/go-autogpt/prompt/executors"
 	"github.com/rs/zerolog/log"
 )
 

@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/eteissonniere/hercules/llms"
+	"github.com/eteissonniere/go-autogpt/llms"
 
 	"github.com/fatih/color"
 	"github.com/urfave/cli/v2"

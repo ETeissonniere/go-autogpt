@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"html/template"
 
-	"github.com/eteissonniere/hercules/prompt"
-	"github.com/eteissonniere/hercules/prompt/commands"
-	"github.com/eteissonniere/hercules/prompt/internal"
+	"github.com/eteissonniere/go-autogpt/prompt"
+	"github.com/eteissonniere/go-autogpt/prompt/commands"
+	"github.com/eteissonniere/go-autogpt/prompt/internal"
 )
 
 const basicTemplate = `You have been provided with the following task: "{{.Task}}". Please execute it using the previously defined commands andc terminate yourself when you deem it appropriate.

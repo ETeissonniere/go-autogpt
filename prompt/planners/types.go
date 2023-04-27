@@ -1,10 +1,10 @@
 package planners
 
 import (
-	"github.com/eteissonniere/hercules/llms"
-	"github.com/eteissonniere/hercules/prompt"
-	"github.com/eteissonniere/hercules/prompt/commands"
-	"github.com/eteissonniere/hercules/prompt/executors"
+	"github.com/eteissonniere/go-autogpt/llms"
+	"github.com/eteissonniere/go-autogpt/prompt"
+	"github.com/eteissonniere/go-autogpt/prompt/commands"
+	"github.com/eteissonniere/go-autogpt/prompt/executors"
 )
 
 type Planner interface {

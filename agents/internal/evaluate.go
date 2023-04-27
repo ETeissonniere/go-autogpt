@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/eteissonniere/hercules/agents/internal/helpers"
-	"github.com/eteissonniere/hercules/llms"
-	"github.com/eteissonniere/hercules/misc/logging"
-	"github.com/eteissonniere/hercules/prompt"
-	"github.com/eteissonniere/hercules/prompt/commands"
+	"github.com/eteissonniere/go-autogpt/agents/internal/helpers"
+	"github.com/eteissonniere/go-autogpt/llms"
+	"github.com/eteissonniere/go-autogpt/misc/logging"
+	"github.com/eteissonniere/go-autogpt/prompt"
+	"github.com/eteissonniere/go-autogpt/prompt/commands"
 	"github.com/rs/zerolog/log"
 )
 

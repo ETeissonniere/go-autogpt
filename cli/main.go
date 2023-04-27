@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/eteissonniere/hercules/misc/logging"
+	"github.com/eteissonniere/go-autogpt/misc/logging"
 
 	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"

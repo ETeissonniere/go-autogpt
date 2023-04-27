@@ -1,4 +1,4 @@
-module github.com/eteissonniere/hercules
+module github.com/eteissonniere/go-autogpt
 
 go 1.20
 
