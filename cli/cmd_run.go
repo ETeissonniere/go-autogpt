@@ -1,10 +1,17 @@
 package main
 
 import (
-	"github.com/eteissonniere/hercules/agent"
+	"fmt"
+
+	"github.com/eteissonniere/hercules/agents/executor"
+	"github.com/eteissonniere/hercules/agents/mastermind"
+	"github.com/eteissonniere/hercules/agents/planner"
 	"github.com/eteissonniere/hercules/llms"
+	"github.com/eteissonniere/hercules/misc/logging"
 	"github.com/eteissonniere/hercules/prompt"
 	"github.com/eteissonniere/hercules/prompt/commands"
+	"github.com/eteissonniere/hercules/prompt/executors"
+	"github.com/eteissonniere/hercules/prompt/planners"
 
 	"github.com/urfave/cli/v2"
 )
@@ -19,11 +26,6 @@ var cmdRun = cli.Command{
 			Required: true,
 		},
 		&cli.StringFlag{
-			Name:     "name",
-			Usage:    "Name of the agent",
-			Required: true,
-		},
-		&cli.StringFlag{
 			Name:     "task",
 			Usage:    "Task of the agent",
 			Required: true,
@@ -34,18 +36,28 @@ var cmdRun = cli.Command{
 		},
 	},
 	Action: func(c *cli.Context) error {
-		llm := llms.NewOpenAI(c.String("apiKey"), "gpt-3.5-turbo")
-		exporter := agent.DoNotExport()
+		exporter := logging.ExportToDebugLogs()
 		if c.String("export") != "" {
 			var err error
-			exporter, err = agent.ExportToFile(c.String("export"))
+			exp, err := logging.ExportToFile(c.String("export"))
 			if err != nil {
-				return err
+				return fmt.Errorf("failed to create file exporter: %w", err)
 			}
+			exporter = logging.ExportChain(
+				exporter,
+				exp,
+			)
 		}
-		agentPrompt := prompt.New(c.String("name"), c.String("task"), commands.DefaultCommands)
-		agent := agent.New(agentPrompt, llm, exporter)
 
-		return agent.Run()
+		plannerPrompt := planners.NewBasic()
+		executorPrompt := executors.NewBasic()
+
+		llm := llms.NewOpenAI(c.String("apiKey"), "gpt-3.5-turbo")
+
+		plannerAgent := planner.New(plannerPrompt, llm)
+		executorAgent := executor.New(executorPrompt, llm)
+
+		mastermindAgent := mastermind.New(plannerAgent, executorAgent)
+		return mastermindAgent.Run(prompt.Task(c.String("task")), commands.DefaultCommands, exporter)
 	},
 }

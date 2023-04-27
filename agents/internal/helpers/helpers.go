@@ -1,11 +1,11 @@
-package agent
+package helpers
 
 import (
 	"regexp"
 	"strings"
 )
 
-func splitCommand(input string) []string {
+func SplitCommand(input string) []string {
 	re := regexp.MustCompile(`[^\s"']+|"[^"]*"|'[^']*'`)
 	result := re.FindAllString(input, -1)
 	for i, s := range result {
@@ -15,7 +15,7 @@ func splitCommand(input string) []string {
 	return result
 }
 
-func withEscapeCharacters(s string) string {
+func WithEscapeCharacters(s string) string {
 	escapeSequences := map[string]string{
 		"\\a":  "\a",
 		"\\b":  "\b",

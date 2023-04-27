@@ -1,4 +1,4 @@
-package agent
+package logging
 
 import (
 	"encoding/json"
@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/eteissonniere/hercules/llms"
+
+	"github.com/rs/zerolog/log"
 )
 
 type Exporter interface {
@@ -46,4 +48,34 @@ func ExportToFile(path string) (Exporter, error) {
 		return nil, fmt.Errorf("failed to open file: %w", err)
 	}
 	return &exportToFile{*file}, nil
+}
+
+type exportToDebugLogs struct{}
+
+func (e *exportToDebugLogs) Export(msg llms.ChatMessage) error {
+	log.Debug().
+		Str("role", string(msg.Role)).
+		Msg(msg.Content)
+	return nil
+}
+
+func ExportToDebugLogs() Exporter {
+	return &exportToDebugLogs{}
+}
+
+type exportChained struct {
+	exporters []Exporter
+}
+
+func (e *exportChained) Export(msg llms.ChatMessage) error {
+	for _, exporter := range e.exporters {
+		if err := exporter.Export(msg); err != nil {
+			return fmt.Errorf("failed to export message: %w", err)
+		}
+	}
+	return nil
+}
+
+func ExportChain(exporters ...Exporter) Exporter {
+	return &exportChained{exporters}
 }

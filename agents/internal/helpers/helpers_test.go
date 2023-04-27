@@ -1,4 +1,4 @@
-package agent
+package helpers
 
 import (
 	"testing"
@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_splitCommand(t *testing.T) {
+func TestSplitCommand(t *testing.T) {
 	tests := []struct {
 		name  string
 		input string
@@ -50,14 +50,14 @@ func Test_splitCommand(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := splitCommand(tt.input)
+			got := SplitCommand(tt.input)
 			assert.Equal(t, tt.want, got)
 		})
 	}
 }
 
-func Test_withEscapeCharacters(t *testing.T) {
-	assert.Equal(t, "test", withEscapeCharacters("test"))
-	assert.Equal(t, "test\ntest", withEscapeCharacters("test\\ntest"))
-	assert.Equal(t, "test\ntest", withEscapeCharacters("test\ntest"))
+func TestWithEscapeCharacters(t *testing.T) {
+	assert.Equal(t, "test", WithEscapeCharacters("test"))
+	assert.Equal(t, "test\ntest", WithEscapeCharacters("test\\ntest"))
+	assert.Equal(t, "test\ntest", WithEscapeCharacters("test\ntest"))
 }

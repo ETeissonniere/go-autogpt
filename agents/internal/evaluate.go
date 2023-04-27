@@ -1,46 +1,40 @@
-package agent
+package internal
 
 import (
 	"fmt"
 	"strings"
 
+	"github.com/eteissonniere/hercules/agents/internal/helpers"
 	"github.com/eteissonniere/hercules/llms"
+	"github.com/eteissonniere/hercules/misc/logging"
 	"github.com/eteissonniere/hercules/prompt"
 	"github.com/eteissonniere/hercules/prompt/commands"
 	"github.com/rs/zerolog/log"
 )
 
-type Agent struct {
-	prompt   prompt.Prompt
-	llm      llms.LLMChatModel
-	exporter Exporter
-}
-
-func New(prompt prompt.Prompt, llm llms.LLMChatModel, exporter Exporter) *Agent {
-	return &Agent{prompt, llm, exporter}
-}
-
-func (a *Agent) Run() error {
+func Evaluate(prompt prompt.Prompt, llm llms.LLMChatModel, cmdsList []commands.Command, exporter logging.Exporter) (llms.ChatConversation, error) {
 	cmds := map[string]commands.Command{}
-	for _, cmd := range a.prompt.Commands() {
+	for _, cmd := range cmdsList {
 		cmds[cmd.Name()] = cmd
+		log.Debug().Str("command", cmd.Name()).Msg("registered command")
 	}
 
 	conversation := llms.ChatConversation{
-		{Role: llms.ChatRoleSystem, Content: a.prompt.String()},
+		{Role: llms.ChatRoleSystem, Content: prompt.String()},
 	}
-	a.onMessage(conversation[0])
+	exporter.Export(conversation[0])
 
 	for {
-		resp, err := a.llm.Complete(conversation)
+		resp, err := llm.Complete(conversation)
 		if err != nil {
-			return fmt.Errorf("failed to get next message in conversation: %w", err)
+			return nil, fmt.Errorf("failed to get next message in conversation: %w", err)
 		}
-		a.onMessage(resp)
+		exporter.Export(resp)
+		conversation = append(conversation, resp)
 
 		lines := strings.Split(resp.Content, "\n")
 		lastLine := lines[len(lines)-1]
-		words := splitCommand(withEscapeCharacters(lastLine))
+		words := helpers.SplitCommand(helpers.WithEscapeCharacters(lastLine))
 		command := words[0]
 		args := words[1:]
 
@@ -51,25 +45,17 @@ func (a *Agent) Run() error {
 		if cmd, ok := cmds[command]; ok {
 			ret, err := cmd.Execute(args)
 			if err == commands.ErrShutdown {
-				return nil
+				return conversation, nil
 			} else if aerr, ok := err.(*commands.AgentError); ok {
 				reply.Content = aerr.AgentExplainer()
 			} else if err != nil {
-				return fmt.Errorf("failed to execute command: %w", err)
+				return nil, fmt.Errorf("failed to execute command: %w", err)
 			} else {
 				reply.Content = ret
 			}
 		}
-		a.onMessage(reply)
 
-		conversation = append(conversation, resp)
 		conversation = append(conversation, reply)
+		exporter.Export(reply)
 	}
-}
-
-func (a *Agent) onMessage(msg llms.ChatMessage) error {
-	log.Info().
-		Str("role", string(msg.Role)).
-		Msg(msg.Content)
-	return a.exporter.Export(msg)
 }
