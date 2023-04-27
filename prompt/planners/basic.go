@@ -21,8 +21,9 @@ Your plan should be written in the form of numeroted bullet points followed by a
 2. Do something else
 3. More stuff
 4. etc...
+shutdown
 
-shutdown`
+Each step of your plan should fit on exactly one line. Lines not conforming to the previous format will be ignored.`
 
 type basicTemplateArguments struct {
 	Task prompt.Task
