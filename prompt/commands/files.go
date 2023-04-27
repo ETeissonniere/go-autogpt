@@ -64,6 +64,10 @@ func (c *ReadFileCommand) Execute(args []string) (string, error) {
 		return "", NewAgentError(err)
 	}
 
+	if len(content) == 0 {
+		content = []byte("file is empty")
+	}
+
 	return string(content), nil
 }
 
