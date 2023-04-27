@@ -52,7 +52,7 @@ var cmdRun = cli.Command{
 		plannerPrompt := planners.NewBasic()
 		executorPrompt := executors.NewBasic()
 
-		llm := llms.NewOpenAI(c.String("apiKey"), "gpt-3.5-turbo")
+		llm := llms.NewOpenAI(c.String("apiKey"), &llms.GPT3Point5Turbo{})
 
 		plannerAgent := planner.New(plannerPrompt, llm)
 		executorAgent := executor.New(executorPrompt, llm)

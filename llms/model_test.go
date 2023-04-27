@@ -26,7 +26,7 @@ func openAiApiKey() string {
 
 func TestModels(t *testing.T) {
 	models := []LLMChatModel{
-		NewOpenAI(openAiApiKey(), "gpt-3.5-turbo"),
+		NewOpenAI(openAiApiKey(), &GPT3Point5Turbo{}),
 	}
 
 	conversation := ChatConversation{
